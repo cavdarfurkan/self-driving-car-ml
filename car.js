@@ -11,6 +11,7 @@ class Car {
     this.friction = 0.05;
     this.angle = 0;
     this.damaged = false;
+    this.passedCarCount = 0;
 
     this.useBrain = controlType == "AI";
 
@@ -39,6 +40,21 @@ class Car {
         this.controls.left = outputs[1];
         this.controls.right = outputs[2];
         this.controls.reverse = outputs[3];
+      }
+
+      if (!this.damaged) {
+        if (
+          this.passedCarCount < traffic.length &&
+          this.y < traffic[this.passedCarCount].y
+        ) {
+          this.passedCarCount++;
+        }
+        if (
+          this.passedCarCount > 0 &&
+          this.y > traffic[this.passedCarCount - 1].y
+        ) {
+          this.passedCarCount--;
+        }
       }
     }
   }
