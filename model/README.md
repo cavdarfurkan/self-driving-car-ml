@@ -1,0 +1,1 @@
+`model.json` can be imported to test the pre-trained model.

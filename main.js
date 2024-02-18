@@ -18,7 +18,7 @@ if (localStorage.getItem("bestBrain")) {
   for (let i = 0; i < cars.length; i++) {
     cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
     if (i != 0) {
-      NeuralNetwork.mutate(cars[i].brain, 0.06);
+      NeuralNetwork.mutate(cars[i].brain, 0.1);
     }
   }
 }
@@ -63,7 +63,7 @@ function exportModel() {
     "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
   const downloadAnchorNode = document.createElement("a");
   downloadAnchorNode.setAttribute("href", dataStr);
-  downloadAnchorNode.setAttribute("download", "localStorage.json");
+  downloadAnchorNode.setAttribute("download", "model.json");
   document.body.appendChild(downloadAnchorNode);
   downloadAnchorNode.click();
   downloadAnchorNode.remove();
