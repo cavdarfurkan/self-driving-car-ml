@@ -11,14 +11,14 @@ const road = new Road(carCanvas.width / 2, carCanvas.width * 0.9);
 let timeoutFlag = true;
 let bestPassedCarCount = JSON.parse(localStorage.getItem("bestPassedCarCount"));
 
-const N = 1000;
+const N = 500;
 const cars = generateCars(N);
 let bestCar = cars[0];
 if (localStorage.getItem("bestBrain")) {
   for (let i = 0; i < cars.length; i++) {
     cars[i].brain = JSON.parse(localStorage.getItem("bestBrain"));
     if (i != 0) {
-      NeuralNetwork.mutate(cars[i].brain, 0.05);
+      NeuralNetwork.mutate(cars[i].brain, 0.06);
     }
   }
 }
@@ -51,6 +51,46 @@ function save() {
 function discard() {
   localStorage.removeItem("bestBrain");
   localStorage.removeItem("bestPassedCarCount");
+}
+
+function exportModel() {
+  const data = {};
+  for (let i = 0; i < localStorage.length; i++) {
+    const key = localStorage.key(i);
+    data[key] = JSON.parse(localStorage.getItem(key));
+  }
+  const dataStr =
+    "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(data));
+  const downloadAnchorNode = document.createElement("a");
+  downloadAnchorNode.setAttribute("href", dataStr);
+  downloadAnchorNode.setAttribute("download", "localStorage.json");
+  document.body.appendChild(downloadAnchorNode);
+  downloadAnchorNode.click();
+  downloadAnchorNode.remove();
+}
+
+function importModel() {
+  const fileInput = document.createElement("input");
+  fileInput.type = "file";
+  fileInput.accept = "application/json";
+
+  fileInput.onchange = function (event) {
+    const file = event.target.files[0];
+    if (file) {
+      const reader = new FileReader();
+      reader.onload = function (e) {
+        const data = JSON.parse(e.target.result);
+        for (const key in data) {
+          if (data.hasOwnProperty(key)) {
+            localStorage.setItem(key, JSON.stringify(data[key]));
+          }
+        }
+      };
+      reader.readAsText(file);
+    }
+  };
+
+  fileInput.click();
 }
 
 function generateCars(N) {
